@@ -10,9 +10,9 @@ def SelectionSort(array,start, end):
     return array
 
 import time
-start_time = time.time()
-arr=funcs.RandomArray(30000)
 n=30000
+arr=funcs.RandomArray(n)
+start_time = time.time()
 result=SelectionSort(arr,0,len(arr))
 end_time = time.time()
 runtime = end_time - start_time

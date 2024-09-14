@@ -30,15 +30,18 @@ def Merge(array, p, q, r):
         array[mergedindex]=RightArray[j]
         j+=1
         mergedindex+=1
+def main():
+    import time
+    n=30000
+    arr=funcs.RandomArray(n)
+    start_time = time.time()
+    MergeSort(arr,0,len(arr))
+    end_time = time.time()
+    runtime = end_time - start_time
+    print("Runtime of Merge Sort at",n,"is",runtime,"seconds")
+    print(arr)
+    Save_In_CSV.CSV_Write("SortedMergeSort.csv",arr)
 
-import time
-n=30000
-arr=funcs.RandomArray(n)
-start_time = time.time()
-MergeSort(arr,0,len(arr))
-end_time = time.time()
-runtime = end_time - start_time
-print("Runtime of Merge Sort at",n,"is",runtime,"seconds")
-print(arr)
-Save_In_CSV.CSV_Write("SortedMergeSort.csv",arr)
+if __name__ == '__main__':
+    main()
 

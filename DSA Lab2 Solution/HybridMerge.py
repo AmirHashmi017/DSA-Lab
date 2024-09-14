@@ -39,14 +39,18 @@ def InsertionSort(array,start,end):
             array[j+1]=array[j]
             j=j-1
         array[j+1]=key
-import time
-# arr=funcs.RandomArray(13)
-n=30000
-arr=funcs.RandomArray(n)
-start_time = time.time()
-HybridMergeSort(arr,0,len(arr)-1)
-end_time = time.time()
-runtime = end_time - start_time
-print("Runtime of Hybrid Merge Sort at",n,"is",runtime,"seconds")
-print(arr)
-Save_In_CSV.CSV_Write("SortedHybridMergeSort.csv",arr)    
+        
+def main():
+    import time
+    n=30000
+    arr=funcs.RandomArray(n)
+    start_time = time.time()
+    HybridMergeSort(arr,0,len(arr)-1)
+    end_time = time.time()
+    runtime = end_time - start_time
+    print("Runtime of Hybrid Merge Sort at",n,"is",runtime,"seconds")
+    print(arr)
+    Save_In_CSV.CSV_Write("SortedHybridMergeSort.csv",arr)
+
+if __name__ == '__main__':
+    main()

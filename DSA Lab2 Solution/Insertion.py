@@ -10,13 +10,17 @@ def InsertionSort(array,start, end):
         array[j+1]=key
     return array
 
-import time
-n=30000
-arr=funcs.RandomArray(n)
-start_time = time.time()
-result=InsertionSort(arr,0,len(arr))
-end_time = time.time()
-runtime = end_time - start_time
-print("Runtime of Insertion Sort at",n,"is",runtime,"seconds")
-print(result)
-Save_In_CSV.CSV_Write("SortedInsertionSort.csv",result)
+def main():
+    import time
+    n=30000
+    arr=funcs.RandomArray(n)
+    start_time = time.time()
+    result=InsertionSort(arr,0,len(arr))
+    end_time = time.time()
+    runtime = end_time - start_time
+    print("Runtime of Insertion Sort at",n,"is",runtime,"seconds")
+    print(result)
+    Save_In_CSV.CSV_Write("SortedInsertionSort.csv",result)
+
+if __name__ == '__main__':
+    main()

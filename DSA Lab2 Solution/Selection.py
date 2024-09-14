@@ -9,13 +9,17 @@ def SelectionSort(array,start, end):
         array[i],array[minimumindex]=array[minimumindex],array[i]
     return array
 
-import time
-n=30000
-arr=funcs.RandomArray(n)
-start_time = time.time()
-result=SelectionSort(arr,0,len(arr))
-end_time = time.time()
-runtime = end_time - start_time
-print("Runtime of Selection Sort at",n,"is",runtime,"seconds")
-print(result)
-Save_In_CSV.CSV_Write("SortedSelectionSort.csv",result)
+def main():
+    import time
+    n=30000
+    arr=funcs.RandomArray(n)
+    start_time = time.time()
+    result=SelectionSort(arr,0,len(arr))
+    end_time = time.time()
+    runtime = end_time - start_time
+    print("Runtime of Selection Sort at",n,"is",runtime,"seconds")
+    print(result)
+    Save_In_CSV.CSV_Write("SortedSelectionSort.csv",result)
+
+if __name__ == '__main__':
+    main()

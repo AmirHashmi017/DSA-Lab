@@ -1,7 +1,7 @@
 import funcs
 import Save_In_CSV
 def SelectionSort(array,start, end):
-    for i in range(start,end,1):
+    for i in range(start,end-1,1):
         minimumindex=i
         for j in range(i+1,end,1):
             if(array[j]<array[minimumindex]):

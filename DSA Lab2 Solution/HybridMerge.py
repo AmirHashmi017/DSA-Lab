@@ -1,7 +1,7 @@
 import funcs
 import Save_In_CSV
 def HybridMergeSort(array,start,end,n=6):
-    if(end-start<=6):
+    if(end-start<=n):
         InsertionSort(array,start,end)
     else:
         mid=int((start+end)/2)

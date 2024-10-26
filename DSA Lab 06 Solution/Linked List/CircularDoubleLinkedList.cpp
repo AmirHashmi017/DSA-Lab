@@ -138,9 +138,9 @@ class CircularLinkedList
             }
             else{
                 Node* Tail=head->previous;
-                Node* newlast=Tail->previous;
-                newlast->next=head;
-                head->previous=newlast;
+                Node* newcurrent=Tail->previous;
+                newcurrent->next=head;
+                head->previous=newcurrent;
                 delete Tail;
             }
             return head;
@@ -244,6 +244,47 @@ class CircularLinkedList
             }while (current!=head);
             cout<<"Repeat-->"<<current->data;
             
+        }
+        void Sort()
+        {
+            for(Node* i=head;i->next!=head;i=i->next)
+            {
+                Node* minindex=i;
+                for(Node* j=i->next;j!=head;j=j->next)
+                {
+                    if(j->data<minindex->data)
+                    {
+                        minindex=j;
+                    }
+                }
+                swap(i->data,minindex->data);
+            }
+        }
+        Node* MergeLists(Node* list1,Node* list2)
+        {
+            if (!list1) return list2;
+            if (!list2) return list1;
+            Node* Tail1=list1->previous;
+            Tail1->next=list2;
+            Node* Tail2=list2->previous;
+            list2->previous=Tail1;
+            Tail2->next=list1;
+            list1->previous=Tail2;
+            return list1;
+        }
+        Node* ReverseList(Node* list1)
+        {
+            Node* current=list1;
+            do
+            {
+                Node* next=current->next;
+                current->next=current->previous;
+                current->previous=next;
+                current=next;
+            }
+            while(current!=list1);
+            head=list1->previous;
+            return head;
         }
 };
 

@@ -2,126 +2,191 @@
 using namespace std;
 struct Node
 {
-    int data;
-    Node * previous;
-    Node * next;
+    string data;
+    Node* next;
+    Node* previous;
 };
-class CircularDoubleLinkList
+
+class CircularLinkedList
 {
     private:
         Node* head;
     public:
-        CircularDoubleLinkList()
+        CircularLinkedList()
         {
             head=nullptr;
         }
-        ~CircularDoubleLinkList()
+        ~CircularLinkedList()
         {
-            Node * current=head;
-            while(current!=nullptr)
+           if(head!=nullptr)
+           {
+            Node* current=head;
+            while(current->next!=head)
             {
                 Node* next=current->next;
                 delete current;
                 current=next;
             }
+            delete current;
             head=nullptr;
+           }
         }
-        Node* GetHead()
-        {
-            return head;
-        }
-        bool IsEmpty()
-        {
-            if(head==nullptr)
-            {
-                return true;
-            }
-            return false;
-        }
-        Node* insertNode(int index, int x)
-        {           
-            if(index<0)
-            {
-                return nullptr;
-            }
-            Node* newNode=new Node();
-            newNode->data=x;
-            if(head==nullptr)
-            {
-                newNode->previous=newNode;
-                newNode->next=newNode;
-                head=newNode;
-            }
-            if(index==0)
-            {
-                Node* Tail=head->previous;
-                newNode->previous=Tail;
-                newNode->next=head;
-                Tail->next=newNode;
-                head=newNode;
-            }
-            else{
-                Node * currentNode=head;
-                for(int i=0;i<index-1&&currentNode->next!=head;i++)
-                {
-                    currentNode=currentNode->next;
-                }
-                if(currentNode->next==head)
-                {
-                    currentNode->next=newNode;
-                    newNode->previous=currentNode;
-                    newNode->next=head;
-                    head->previous=newNode;
-                }
-                else{
-                newNode->previous=currentNode;
-                newNode->next=currentNode->next;
-                newNode->next->previous=newNode;
-                currentNode->next=newNode;
-                }
-            }
-            return head;
-        }
-        Node* insertAtHead(int x)
+        void InsertAtHead(string value)
         {
             Node* newnode=new Node();
-            newnode->data=x;
+            newnode->data=value;
+            if(head==nullptr)
+            {
+                newnode->previous=newnode;
+                newnode->next=newnode;
+                head=newnode;
+            }
+            else{
+            Node* Tail=head->previous;
+            newnode->next=head;
+            newnode->previous=Tail;
+            Tail->next=newnode;
+            head->previous=newnode;
+            head=newnode;
+            } 
+        }
+        void InsertAtEnd(string value)
+        {
+            Node* newnode=new Node();
+            newnode->data=value;
             if(head==nullptr)
             {
                 newnode->next=newnode;
                 newnode->previous=newnode;
                 head=newnode;
             }
-            else{
-                 Node * tail=head->previous;
-                 newnode->next=head;
-                 newnode->previous=tail;
-                 tail->next=newnode;
-                 head=newnode;
-            }
-            
-            return head;
+            else
+            {
+            Node* tail=head->previous;
+            tail->next=newnode;
+            newnode->previous=tail;
+            newnode->next=head;
+            head->previous=newnode;
         }
-        Node* insertAtEnd(int x)
+        }
+        void InsertNode(string value,int index)
         {
-            Node* newnode=new Node();
-            newnode->data=x;
+            if(index==0)
+            {
+                InsertAtHead(value);
+            }
+            else if(head==nullptr&&index>0)
+            {
+                cout<<"Can't Insert";
+            }
+            else{
+                Node* current=head;
+                int i=0;
+                while(current->next!=head&&i<index-1)
+                {
+                    current=current->next;
+                    i++;
+                }
+                if(current->next==head && i==index-1)
+                {
+                    InsertAtEnd(value);
+                }
+                else if(i==index-1){
+                    Node* newnode=new Node();
+                    newnode->data=value;
+                    newnode->next=current->next;
+                    newnode->previous=current;
+                    current->next->previous=newnode;
+                    current->next=newnode;
+                }
+                else{
+                    cout<<"Index out of Bounds of array"<<endl;
+                }
+            }
+        }
+        Node* DeleteAtHead()
+        {
             if(head==nullptr)
             {
-            newnode->previous=newnode;
-            newnode->next=newnode;
-            head=newnode;
+                cout<<"Circular Linked List is Empty.\n";
+            }
+            else if(head->next==head)
+            {
+                delete head;
+                head=nullptr;
             }
             else{
+            Node* Next=head->next;
             Node* Tail=head->previous;
-            newnode->previous=Tail;
-            newnode->next=head;
-            Tail->next=newnode;
-            head->previous=newnode;
+            Next->previous=Tail;
+            Tail->next=Next;
+            delete head;
+            head=Next;
+            }
+            return head;       
+        }
+        Node* DeleteAtEnd()
+        {
+            if(head==nullptr)
+            {
+                cout<<"Circular Linked List is Empty.\n";
+            }
+            else if(head->next==head)
+            {
+                delete head;
+                head=nullptr;
+            }
+            else{
+                Node* Tail=head->previous;
+                Node* newlast=Tail->previous;
+                newlast->next=head;
+                head->previous=newlast;
+                delete Tail;
             }
             return head;
         }
-        bool findNode(int x)
+        Node* DeleteAtMiddle()
+        {
+            int mid=int(FindNumberOfElementsinList()/2);
+            if(head==nullptr)
+            {
+                cout<<"No elements in list";
+            }
+            if(mid==0)
+            {
+                DeleteAtHead();
+            }
+            else{
+                Node* current=head;
+                int i=0;
+                while(i<mid)
+                {
+                    current=current->next;
+                    i++;
+                }
+                    current->previous->next=current->next;
+                    current->next->previous=current->previous;
+                    delete current;
+            }
+            return head;
+        }
+        int FindNumberOfElementsinList()
+        {
+            int count=0;
+            if(head==nullptr)
+            {
+                return count;
+            }
+            Node* current=head;
+            while(current->next!=head)
+            {
+                current=current->next;
+                count++;
+            }
+            count++;
+            return count;
+        }
+        bool FindNode(string value)
         {
             if(head==nullptr)
             {
@@ -130,241 +195,79 @@ class CircularDoubleLinkList
             Node* current=head;
             do
             {
-                if(current->data==x)
+                if(current->data==value)
                 {
                     return true;
                 }
-                current=current->next;
-            }
-            while(current->next!=head);
+            } while (current!=head);
             return false;
-        }
-        bool deleteNode(int x)
-        {
-            while (head != nullptr && head->data == x) {
-                Node* next = head->next;
-                delete head;
-                
-                if (next != nullptr) {
-                    next->previous = nullptr;
-                }
-                head = next;
-            }
-
-            if (head == nullptr) {
-                return true;
-            }
-            Node* current=head;
-            while (current != nullptr && current->next != nullptr) {
-                if (current->next->data == x) {
-                    Node* nodeToRemove = current->next;
-                    current->next = nodeToRemove->next;
-                    if (nodeToRemove->next != nullptr) {
-                        nodeToRemove->next->previous = current;
-                    }
-                    delete nodeToRemove;
-                } else {
-                    current = current->next;
-                }
-            }
-
-            return true;
-        }
-        bool deleteFromStart()
-        {
-            if(head==nullptr)
-            {
-                return false;
-            }
-            Node* next=head->next;
-            Node * tail=head->previous;
-            next->previous=tail;
-            tail->next=next;
-            delete head;
-            head=next;
-        }
-        bool deleteFromEnd()
-        {
-            if(head==nullptr)
-            {
-                return false;
-            }
-            else if(head->next==nullptr)
-            {
-            delete head;
-            head=nullptr;
-            return true;
-            }
-            Node*tail=head->previous;
-            tail->previous->next=head;
-            head->previous=tail->previous;
-            delete tail;
-            return true;
             
         }
-       void displayList()
+        bool DeleteNode(string value)
         {
-            if (head == nullptr) {
-                cout << "Linked List is empty" << endl;
-                return;
-            }
-
-            cout << "Linked List: ";
-            Node* currentNode = head;
-
-            do {
-                cout << currentNode->data << " ---> ";
-                currentNode = currentNode->next;
-            } while (currentNode != head);
-
-            cout << "Back to Head" << endl; 
-        }
-
-        Node* reverseList()
-        {
-            Node * current=head;
-            while(current->next!=nullptr)
+            if(head==nullptr)
             {
-                current=current->next;
+                return false;
             }
-            head=current;
-            while(current!=nullptr)
+            Node* current=head;
+            do
             {
-                Node* next=current->previous;
-                current->previous=current->next;
-                current->next=next;
-                current=current->next;
-            }
-            return head;
-
-        }
-        Node* sortList(Node *list)
-        {
-            for(Node* i=list;i->next!=nullptr;i=i->next)
-            {
-                Node* minNode=i;
-                for(Node* j=i->next;j!=nullptr;j=j->next)
+                if(current->data==value)
                 {
-                    if(j->data<minNode->data)
+                    if(current==head)
                     {
-                        minNode=j;
+                        DeleteAtHead();
                     }
-                }
-                swap(i->data,minNode->data);
-            }
-            return list;
-        }
-        Node* removeDuplicates(Node *list)
-        {
-            Node* current=list;
-            while(current!=nullptr&&current->next!=nullptr)
-            {
-                Node* remaining=current;
-                while(remaining->next!=nullptr)
-                {
-                    if(current->data==remaining->next->data)
+                    else if(current->next==head)
                     {
-                        Node* nodetoremove=remaining->next;
-                        remaining->next=nodetoremove->next;
-                        if(nodetoremove->next!=nullptr)
-                        {
-                            nodetoremove->next->previous=remaining;
-                        }
-                        delete nodetoremove;
+                        DeleteAtEnd();
                     }
-                    else
-                    {
-                        remaining=remaining->next;
+                    else{
+                        current->previous->next=current->next;
+                        current->next->previous=current->previous;
+                        delete current;
                     }
+                    return true;
                 }
                 current=current->next;
-            }
-            return list;
+            } while (current!=head);
+            return false;
         }
-        Node* mergeLists(Node* list1, Node* list2) {
-        if (!list1) return list2;
-        if (!list2) return list1;
-
-        if (list1->data < list2->data) {
-            list1->next = mergeLists(list1->next, list2);
-            if (list1->next != nullptr) {
-                    list1->next->previous = list1;
-                }
-                return list1;
-            } else {
-                list2->next = mergeLists(list1, list2->next);
-                if (list2->next != nullptr) {
-                    list2->next->previous = list2;
-                }
-                return list2;
-            }
-        }
-
-        Node* interestLists(Node *list1, Node *list2)
+        void DisplayList()
         {
-            CircularDoubleLinkList intersection;
-            Node* first=list1;
-            Node*second;
-            while(first!=nullptr)
+            cout<<"\nCircular Linked List: ";
+            Node* current=head;
+            do
             {
-                second=list2;
-                while(second!=nullptr)
-                {
-                    if(first->data==second->data)
-                    {
-                        if(!intersection.findNode(first->data))
-                        {
-                            intersection.insertAtEnd(first->data);
-                        }
-                    }
-                    second=second->next;
-                }
-                first=first->next;
-            }
-            intersection.displayList();
-            return intersection.GetHead();
+                cout<<current->data<<"-->";
+                current=current->next;
+            }while (current!=head);
+            cout<<"Repeat-->"<<current->data;
+            
         }
-
 };
+
 int main()
 {
-    CircularDoubleLinkList list;
-    CircularDoubleLinkList list2;
-    list.insertAtEnd(10);
-    list.insertAtEnd(30);
-    list.insertAtEnd(20);
-    list.insertAtHead(30);
-    list.insertAtHead(5);
-    list.insertAtEnd(30);
-    list.insertAtEnd(30);
-    list.insertNode(3,3);
-    list.displayList();
-    list.deleteFromStart();
-    list.displayList();
-    list.deleteFromEnd();
-    list.displayList();
-    list.deleteNode(30);
-    list.displayList();
-    cout<<list.findNode(20)<<endl;
-    cout<<list.findNode(2)<<endl;
-    list2.insertAtEnd(3);
-    list2.insertAtEnd(5);
-    list2.insertAtEnd(7);
-    list2.insertAtEnd(3);
-    list2.insertAtEnd(7);
-    list2.insertAtEnd(7);
-    list2.displayList();
-    Node * first=list2.GetHead();
-    list2.sortList(first);
-    list2.displayList();
-    list2.removeDuplicates(first);
-    list2.displayList();
-    list2.reverseList();
-    list2.displayList();
-    Node * list3node=list.mergeLists(list.GetHead(),list2.GetHead());
-    while(list3node!=nullptr)
-    {
-        cout<<list3node->data<<" ";
-        list3node=list3node->next;
-    }
+    CircularLinkedList list;
+    list.InsertAtHead("A");
+    list.InsertAtEnd("B");
+    
+    list.DisplayList();
+    list.InsertAtEnd("HOO");
+    list.InsertNode("C",2);
+    list.DisplayList();
+    list.InsertAtHead("D");
+    list.InsertAtHead("E");
+    list.DisplayList();
+    cout<<"\n"<<list.FindNode("E");
+    list.DeleteNode("E");
+    list.DisplayList();
+    list.DeleteAtMiddle();
+    list.DisplayList();
+    list.DeleteAtHead();
+    list.DisplayList();
+    list.DeleteAtEnd();
+    list.DisplayList();
+
 }

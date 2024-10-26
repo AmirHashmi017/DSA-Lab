@@ -9,10 +9,12 @@ class Queue
 {
     private:
         Node* head;
+        Node* tail;
     public:
         Queue()
         {
             head=nullptr;
+            tail=nullptr;
         }
         ~Queue()
         {
@@ -33,15 +35,12 @@ class Queue
             {
             newNode->next=head;
             head=newNode;
+            tail=newNode;
             }
             else{
-                Node * tail=head;
-                while(tail->next!=nullptr)
-                {
-                    tail=tail->next;
-                }
-                tail->next=newNode;
                 newNode->next=nullptr;
+                tail->next=newNode;
+                tail=newNode;
             }
         }
         string Dequeue()
@@ -80,6 +79,10 @@ int main() {
 
     cout << "Dequeue: " << q.Dequeue() << endl;
     cout << "Dequeue: " << q.Dequeue() << endl; 
+    cout << "Peek after Dequeueing of 2 elements: " << q.Peek() << endl;
+    q.Enqueue("Amir");
+    cout << "Peek after Dequeueing of 2 elements: " << q.Peek() << endl;
+    q.Dequeue();
     cout << "Peek after Dequeueing of 2 elements: " << q.Peek() << endl;
     if(q.IsEmpty())
     {

@@ -31,6 +31,10 @@ class CircularLinkedList
             head=nullptr;
            }
         }
+        Node* GetHead()
+        {
+            return head;
+        }
         void InsertAtHead(string value)
         {
             Node* newnode=new Node();
@@ -245,6 +249,18 @@ class CircularLinkedList
             cout<<"Repeat-->"<<current->data;
             
         }
+        void DisplayList2(Node* list1)
+        {
+            cout<<"\nCircular Linked List: ";
+            Node* current=list1;
+            do
+            {
+                cout<<current->data<<"-->";
+                current=current->next;
+            }while (current!=list1);
+            cout<<"Repeat-->"<<current->data;
+            
+        }
         void Sort()
         {
             for(Node* i=head;i->next!=head;i=i->next)
@@ -262,19 +278,45 @@ class CircularLinkedList
         }
         Node* MergeLists(Node* list1,Node* list2)
         {
-            if (!list1) return list2;
-            if (!list2) return list1;
-            Node* Tail1=list1->previous;
-            Tail1->next=list2;
-            Node* Tail2=list2->previous;
-            list2->previous=Tail1;
-            Tail2->next=list1;
-            list1->previous=Tail2;
-            return list1;
+            if(!list1)
+            {
+                return list2;
+            }
+            if(!list2)
+            {
+                return list1;
+            }
+            Node* head=nullptr;
+            if(list1->data<list2->data)
+            {
+                head=list1;
+                head->next=MergeLists(list1->next,list2);
+                if(head->next!=nullptr)
+                {
+                    head->next->previous=head;
+                }
+            }
+            else{
+                head=list2;
+                head->next=MergeLists(list1,list2->next);
+                if(head->next!=nullptr)
+                {
+                    head->next->previous=head;
+                }
+            }
+            Node* tail=head;
+            while(tail->next!=nullptr)
+            {
+                tail=tail->next;
+            }
+            tail->next=head;
+            head->previous=tail;
+            DisplayList2(head);
+            return head;
         }
-        Node* ReverseList(Node* list1)
+        Node* ReverseList()
         {
-            Node* current=list1;
+            Node* current=head;
             do
             {
                 Node* next=current->next;
@@ -282,8 +324,9 @@ class CircularLinkedList
                 current->previous=next;
                 current=next;
             }
-            while(current!=list1);
-            head=list1->previous;
+            while(current!=head);
+            head=current->next;
+
             return head;
         }
 };
@@ -301,6 +344,10 @@ int main()
     list.InsertAtHead("D");
     list.InsertAtHead("E");
     list.DisplayList();
+    list.ReverseList();
+    list.DisplayList();
+    list.Sort();
+    list.DisplayList();
     cout<<"\n"<<list.FindNode("E");
     list.DeleteNode("E");
     list.DisplayList();
@@ -310,5 +357,12 @@ int main()
     list.DisplayList();
     list.DeleteAtEnd();
     list.DisplayList();
-
+    CircularLinkedList list2;
+    list2.InsertAtHead("A");
+    list2.InsertAtEnd("D");
+    list2.InsertAtEnd("M");
+    list2.InsertAtEnd("N");
+    list2.DisplayList();
+    list.MergeLists(list.GetHead(),list2.GetHead());
+    
 }

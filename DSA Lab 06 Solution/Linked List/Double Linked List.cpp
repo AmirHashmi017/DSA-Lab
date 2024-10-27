@@ -189,20 +189,18 @@ class DoubleLinkList
         Node* reverseList()
         {
             Node * current=head;
-            while(current->next!=nullptr)
-            {
-                current=current->next;
-            }
-            head=current;
             while(current!=nullptr)
             {
-                Node* next=current->previous;
-                current->previous=current->next;
-                current->next=next;
-                current=current->next;
+                Node* next=current->next;
+                current->next=current->previous;
+                current->previous=next;
+                if(next==nullptr)
+                {
+                    head=current;
+                }
+                current=next;
             }
             return head;
-
         }
         Node* sortList(Node *list)
         {

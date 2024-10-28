@@ -5,7 +5,17 @@ class RBNode:
         self.left=None
         self.right=None
         self.parent=None
-    
+        self.size=1
+
+    def UpdateSize(self):
+        leftsize=0
+        rightsize=0
+        if(self.left!=None):
+            leftsize=self.left.size
+        if(self.right!=None):
+            rightsize=self.right.size
+        self.size=1+leftsize+rightsize
+
     def Sibling(self):
         if(self.parent==None):
             return None
@@ -27,6 +37,7 @@ class RBNode:
 class RedBlackTree:
     def __init__(self):
         self.root=None
+        
     
     def Search(self,value):
         current=self.root
@@ -39,13 +50,16 @@ class RedBlackTree:
                 current=current.right
         return None
     
+
     def Insert(self,value):
+        
         newnode=RBNode(value)
         if(self.root==None):
             self.root=newnode
         else:
             current=self.root
             while(True):
+                current.size+=1
                 if(value<current.value):
                     if(current.left==None):
                         current.left=newnode
@@ -97,7 +111,80 @@ class RedBlackTree:
 
         self.root.color="black"
                 
+    def delete(self, value):
+        node_to_remove = self.Search(value)
 
+        if node_to_remove is None:
+            return
+
+        if node_to_remove.left is None or node_to_remove.right is None:
+            self._replace_node(
+                node_to_remove, node_to_remove.left or node_to_remove.right)
+        else:
+            successor = self.FindMinimum(node_to_remove.right)
+            node_to_remove.value = successor.value
+            self._replace_node(successor, successor.right)
+
+        self.delete_fix(node_to_remove)
+
+    def delete_fix(self, x):
+        while x != self.root and x.color == 'black':
+            if x == x.parent.left:
+                sibling = x.sibling()
+                if sibling.color == 'red':
+                    sibling.color = 'black'
+                    x.parent.color = 'red'
+                    self.rotate_left(x.parent)
+                    sibling = x.sibling()
+                if (sibling.left is None or sibling.left.color == 'black') and (sibling.right is None or sibling.right.color == 'black'):
+                    sibling.color = 'red'
+                    x = x.parent
+                else:
+                    if sibling.right is None or sibling.right.color == 'black':
+                        sibling.left.color = 'black'
+                        sibling.color = 'red'
+                        self.rotate_right(sibling)
+                        sibling = x.sibling()
+                    sibling.color = x.parent.color
+                    x.parent.color = 'black'
+                    if sibling.right:
+                        sibling.right.color = 'black'
+                    self.rotate_left(x.parent)
+                    x = self.root
+            else:
+                sibling = x.sibling()
+                if sibling.color == 'red':
+                    sibling.color = 'black'
+                    x.parent.color = 'red'
+                    self.rotate_right(x.parent)
+                    sibling = x.sibling()
+                if (sibling.left is None or sibling.left.color == 'black') and (sibling.right is None or sibling.right.color == 'black'):
+                    sibling.color = 'red'
+                    x = x.parent
+                else:
+                    if sibling.left is None or sibling.left.color == 'black':
+                        sibling.right.color = 'black'
+                        sibling.color = 'red'
+                        self.rotate_left(sibling)
+                        sibling = x.sibling()
+                    sibling.color = x.parent.color
+                    x.parent.color = 'black'
+                    if sibling.left:
+                        sibling.left.color = 'black'
+                    self.rotate_right(x.parent)
+                    x = self.root
+        x.color = 'black'
+
+    def _replace_node(self, old_node, new_node):
+        if old_node.parent is None:
+            self.root = new_node
+        else:
+            if old_node == old_node.parent.left:
+                old_node.parent.left = new_node
+            else:
+                old_node.parent.right = new_node
+        if new_node is not None:
+            new_node.parent = old_node.parent
 
     def RotateLeft(self,node):
         RightChild=node.right
@@ -113,6 +200,8 @@ class RedBlackTree:
             node.parent.right=RightChild
         RightChild.left=node
         node.parent=RightChild
+        node.UpdateSize()
+        RightChild.UpdateSize()
 
     def RotateRight(self,node):
         LeftChild=node.left
@@ -128,6 +217,8 @@ class RedBlackTree:
             node.parent.right=LeftChild
         LeftChild.right=node
         node.parent=LeftChild
+        node.UpdateSize()
+        LeftChild.UpdateSize()
         
 
 
@@ -147,6 +238,29 @@ class RedBlackTree:
             print(node.value,end=" ")
             self.PreOrderTraversal(node.left)
             self.PreOrderTraversal(node.right)
+    
+    def FindMedian(self):
+        if(self.root==None):
+            return None
+        totalnodes=self.root.size
+        if(totalnodes%2==1):
+            return self.FindKth(self.root,totalnodes//2+1).value
+        else:
+            leftmiddle=self.FindKth(self.root,totalnodes//2).value
+            rightmiddle=self.FindKth(self.root,totalnodes//2+1).value
+            return (leftmiddle+rightmiddle)//2
+    
+    def FindKth(self,node,K):
+        leftsize=0
+        if(node.left!=None):
+            leftsize=node.left.size
+        if(leftsize==K-1):
+            return node
+        elif(leftsize>K-1):
+            return self.FindKth(node.left,K)
+        elif(leftsize<K-1):
+            return self.FindKth(node.right,K-leftsize-1)
+
 
 # Example driver code
 if __name__ == "__main__":
@@ -155,6 +269,7 @@ if __name__ == "__main__":
     tree.Insert(20)
     tree.Insert(30)
     tree.Insert(40)
+    tree.Insert(45)
     tree.Insert(50)
     tree.Insert(25)
     if(tree.Search(40)):
@@ -165,9 +280,10 @@ if __name__ == "__main__":
     tree.InOrderTraversal(tree.root)
     print()
     tree.PreOrderTraversal(tree.root)
+    median = tree.FindMedian()
+    print("\n Median of the Red-Black Tree:", median)
+    tree.delete(20)
 
-    # tree.delete(20)
-
-    # print("Inorder traversal of the Red-Black Tree after deleting 20")
-    # tree._inorder_traversal(tree.root)
-    # print()
+    print("Inorder traversal of the Red-Black Tree after deleting 20")
+    tree.InOrderTraversal(tree.root)
+    print()

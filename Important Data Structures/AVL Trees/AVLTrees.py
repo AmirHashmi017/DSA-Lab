@@ -188,6 +188,19 @@ def delete(root, key):
 
     return root
 
+def Search(root,key):
+    if(root==None):
+        return None
+    elif key==root.key:
+        return root.key
+    elif key<root.key:
+        return Search(root.left,key)
+    elif key>root.key:
+        return Search(root.right,key)
+    else:
+        return None
+    
+
 # A utility function to print preorder 
 # traversal of the tree
 def pre_order(root):
@@ -212,8 +225,10 @@ root = insert(root, 2)
 print("Preorder traversal of the "
       "constructed AVL tree is")
 pre_order(root)
+print(f"\nSearching for 10, {Search(root,10)} found.")
 root = delete(root, 10)
 
 print("\nPreorder traversal after"
           " deletion of 10")
 pre_order(root)
+print(f"\nSearching for 10, {Search(root,10)} found.")

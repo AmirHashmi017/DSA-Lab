@@ -13,11 +13,14 @@ def DFS(graph,visited,startnode):
     DFSStack.append(startnode)
     while(DFSStack):
         current=DFSStack.pop()
-        print(current,end=' ')
-        if(current not in visited):
+        if current not in visited:
+            print(current,end=" ")
             visited.append(current)
             for neighbours in graph[current]:
-                if neighbours not in visited:
+                if(neighbours not in visited):
                     DFSStack.append(neighbours)
+        
 
+#Driver
+print("DFS of Graph: ")
 DFS(graph,visited,'5')

@@ -53,14 +53,37 @@ class ExpressionConverter:
         return stack[-1]
     
     def InfixToPrefix(self,expression):
-        reversedexpression=expression[::-1]
-        adjustedexpression=reversedexpression.replace('(','temp').replace(')','(').replace('temp',')')
-        adjustedexpression=adjustedexpression.replace('{','temp').replace('}','{').replace('temp','}')
-        adjustedexpression=adjustedexpression.replace('[','temp').replace(']','[').replace('temp',']')
+        stackoperands=[]
+        stackoperators=[]
+        for character in expression:
+            if(self.IsOperand(character)):
+                stackoperands.append(character)
+            elif(character=='(' or character=='{' or character=='['):
+                stackoperators.append(character)
+            elif(character==')' or character=='}' or character==']'):
+                while(stackoperators and stackoperators[-1] not in "({["):
+                    operand2=stackoperands.pop()
+                    operand1=stackoperands.pop()
+                    operator=stackoperators.pop()
+                    stackoperands.append(f"{operator}{operand1}{operand2}")
+                stackoperators.pop()
 
-        reversepostfix=self.InfixToPostfix(adjustedexpression)
-        prefix=reversepostfix[::-1]
-        return prefix
+            elif(self.IsOperator(character)):
+                while(stackoperators and stackoperators[-1] not in "({[" and self.precedence[character]<=self.precedence[stackoperators[-1]]):
+                    operand2=stackoperands.pop()
+                    operand1=stackoperands.pop()
+                    operator=stackoperators.pop()
+                    stackoperands.append(f"{operator}{operand1}{operand2}")
+                stackoperators.append(character)
+            
+        while(stackoperators):
+            operand2=stackoperands.pop()
+            operand1=stackoperands.pop()
+            operator=stackoperators.pop()
+            stackoperands.append(f"{operator}{operand1}{operand2}")
+        
+       
+        return stackoperands[-1]
     
     def PrefixToInfix(self,expression):
         stack=[]
@@ -75,8 +98,8 @@ class ExpressionConverter:
         return stack[-1]
     
 # Driver Code
-expression = "a+[(b*{c+[d-e]})/f]*g"  
-# expression = "a+b*c+d"  
+# expression = "a+[(b*{c+[d-e]})/f]*g"  
+expression = "a+b*c+d"  
 converter = ExpressionConverter(expression)
 
 print("Infix Expression:", expression)
@@ -85,7 +108,7 @@ print("Postfix Expression:",end="")
 converter.PrintExpression(postfix)
 prefix = converter.InfixToPrefix(expression)
 print("Prefix Expression:",end="")
-converter.PrintExpression(postfix)
+converter.PrintExpression(prefix)
 infixfrompostfix=converter.PostfixToInfix(postfix)
 print("Converted back to Infix from Postfix:",end="")
 converter.PrintExpression(infixfrompostfix)

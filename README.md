@@ -14,6 +14,7 @@ This repository contains all my work from the **Data Structures and Algorithms (
 - **Double-Ended Queues (Deque)**  
 
 ## **Algorithms Implemented**  
+- **Sorting Algorithms** 
 - **Dijkstra's Algorithm**  
 - **Kruskal's Algorithm**  
 - **Prim's Algorithm**  
